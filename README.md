@@ -75,7 +75,7 @@ The application uses:
 
 ## Architecture
 
-![Architecture](docs/architecture.png)
+![Architecture](docs/screenshots/architecture.png)
 
 ---
 
@@ -87,7 +87,7 @@ The application uses:
 
 ### Voting Interface
 
-![Voting](docs/screenshots/registerd and time running.png)
+![Voting](docs/screenshots/registerd.png)
 
 ### Results Dashboard
 
