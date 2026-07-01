@@ -23,12 +23,15 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Install Dependencies
-        run: forge install
+        run: |
+            git submodule update --init --recursive
 
       - name: Check Formatting
         run: forge fmt --check
