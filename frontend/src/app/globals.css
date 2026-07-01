@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Base Theme */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-zinc-950 text-zinc-100 antialiased;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Smooth scrolling */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Inputs */
+
+input,
+select,
+textarea {
+  @apply outline-none;
+}
+
+/* Buttons */
+
+button {
+  @apply transition-all duration-200;
+}
+
+/* Card hover effect */
+
+.card-hover {
+  @apply transition transform hover:scale-[1.02];
+}
+
+/* Scrollbar styling */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
