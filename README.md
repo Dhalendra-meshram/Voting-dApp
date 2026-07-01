@@ -87,7 +87,7 @@ The application uses:
 
 ### Voting Interface
 
-![Voting](docs/screenshots/registerd.png)
+![Voting](docs/screenshots/registered.png)
 
 ### Results Dashboard
 
