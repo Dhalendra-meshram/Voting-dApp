@@ -17,8 +17,9 @@ contract VoteTest is Test {
     }
 
     function testOwnerIsSetCorrectly() public view {
-    assertEq(vote.owner(), owner);
-}
+        assertEq(vote.owner(), owner);
+    }
+
     function testRegisterCandidate() public {
         vm.prank(owner);
         vote.registerCandidate(candidate1, "cid1");

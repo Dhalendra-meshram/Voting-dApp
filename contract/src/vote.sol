@@ -15,7 +15,6 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
  */
 
 contract Vote is Ownable, Pausable, ReentrancyGuard {
-
     constructor() Ownable(msg.sender) {}
 
     // -------------------------------------------------
@@ -37,29 +36,29 @@ contract Vote is Ownable, Pausable, ReentrancyGuard {
     // Events
     // -------------------------------------------------
 
-    event CandidateRegistered(
-        uint indexed candidateId,
-        address indexed candidateAddress,
-        string metadataCid
-    );
+    event CandidateRegistered(uint256 indexed candidateId, address indexed candidateAddress, string metadataCid);
 
-    event VoterRegistered(
-        address indexed voter,
-        string name,
-        uint age,
-        Gender gender
-    );
+    event VoterRegistered(address indexed voter, string name, uint256 age, Gender gender);
 
-    event VoteCast(address indexed voter, uint indexed candidateId);
-    event VotingPeriodSet(uint startTime, uint endTime);
-    event WinnerAnnounced(uint candidateId, address winner, bool isTie);
+    event VoteCast(address indexed voter, uint256 indexed candidateId);
+    event VotingPeriodSet(uint256 startTime, uint256 endTime);
+    event WinnerAnnounced(uint256 candidateId, address winner, bool isTie);
 
     // -------------------------------------------------
     // Enums
     // -------------------------------------------------
 
-    enum Gender { NotSpecified, Male, Female, Other }
-    enum VotingStatus { NotStarted, InProgress, Ended }
+    enum Gender {
+        NotSpecified,
+        Male,
+        Female,
+        Other
+    }
+    enum VotingStatus {
+        NotStarted,
+        InProgress,
+        Ended
+    }
 
     // -------------------------------------------------
     // Structs
@@ -68,30 +67,30 @@ contract Vote is Ownable, Pausable, ReentrancyGuard {
     struct Candidate {
         address candidateAddress;
         string metadataCid;
-        uint voteCount;
+        uint256 voteCount;
     }
 
     struct Voter {
         string name;
-        uint age;
+        uint256 age;
         Gender gender;
-        uint votedCandidateId;
+        uint256 votedCandidateId;
     }
 
     // -------------------------------------------------
     // State
     // -------------------------------------------------
 
-    uint public startTime;
-    uint public endTime;
-    uint public nextCandidateId;
+    uint256 public startTime;
+    uint256 public endTime;
+    uint256 public nextCandidateId;
 
-    uint public winningCandidateId;
+    uint256 public winningCandidateId;
     address public winner;
     bool public winnerDeclared;
     bool public isTie;
 
-    mapping(uint => Candidate) private candidates;
+    mapping(uint256 => Candidate) private candidates;
     mapping(address => bool) public isCandidateRegistered;
     mapping(address => bool) public isVoterRegistered;
     mapping(address => Voter) private voters;
@@ -100,29 +99,21 @@ contract Vote is Ownable, Pausable, ReentrancyGuard {
     // Candidate Management
     // -------------------------------------------------
 
-    function registerCandidate(
-        address _candidate,
-        string calldata _metadataCid
-    ) external onlyOwner {
-
+    function registerCandidate(address _candidate, string calldata _metadataCid) external onlyOwner {
         if (_candidate == address(0)) revert InvalidCandidate();
         if (isCandidateRegistered[_candidate]) revert AlreadyRegistered();
         if (startTime != 0) revert VotingAlreadyScheduled();
 
         nextCandidateId++;
 
-        candidates[nextCandidateId] = Candidate({
-            candidateAddress: _candidate,
-            metadataCid: _metadataCid,
-            voteCount: 0
-        });
+        candidates[nextCandidateId] = Candidate({candidateAddress: _candidate, metadataCid: _metadataCid, voteCount: 0});
 
         isCandidateRegistered[_candidate] = true;
 
         emit CandidateRegistered(nextCandidateId, _candidate, _metadataCid);
     }
 
-    function getVoteCount(uint _id) external view returns (uint) {
+    function getVoteCount(uint256 _id) external view returns (uint256) {
         if (_id == 0 || _id > nextCandidateId) revert InvalidCandidate();
         return candidates[_id].voteCount;
     }
@@ -131,22 +122,12 @@ contract Vote is Ownable, Pausable, ReentrancyGuard {
     // Voter Registration
     // -------------------------------------------------
 
-    function registerVoter(
-        string calldata _name,
-        uint _age,
-        Gender _gender
-    ) external {
-
+    function registerVoter(string calldata _name, uint256 _age, Gender _gender) external {
         if (isVoterRegistered[msg.sender]) revert AlreadyRegistered();
         if (_age < 18) revert InvalidAge();
         if (bytes(_name).length == 0) revert NotRegistered();
 
-        voters[msg.sender] = Voter({
-            name: _name,
-            age: _age,
-            gender: _gender,
-            votedCandidateId: 0
-        });
+        voters[msg.sender] = Voter({name: _name, age: _age, gender: _gender, votedCandidateId: 0});
 
         isVoterRegistered[msg.sender] = true;
 
@@ -157,11 +138,7 @@ contract Vote is Ownable, Pausable, ReentrancyGuard {
     // Voting
     // -------------------------------------------------
 
-    function castVote(uint _candidateId)
-        external
-        whenNotPaused
-        nonReentrant
-    {
+    function castVote(uint256 _candidateId) external whenNotPaused nonReentrant {
         if (!_isVotingActive()) revert VotingNotActive();
         if (!isVoterRegistered[msg.sender]) revert NotRegistered();
         if (_candidateId == 0 || _candidateId > nextCandidateId) revert InvalidCandidate();
@@ -175,31 +152,22 @@ contract Vote is Ownable, Pausable, ReentrancyGuard {
         emit VoteCast(msg.sender, _candidateId);
     }
 
+    function getCandidate(uint256 _id)
+        external
+        view
+        returns (address candidateAddress, string memory metadataCid, uint256 voteCount)
+    {
+        if (_id == 0 || _id > nextCandidateId) revert InvalidCandidate();
 
-     function getCandidate(uint _id)
-    external
-    view
-    returns (
-        address candidateAddress,
-        string memory metadataCid,
-        uint voteCount
-    )
-{
-    if (_id == 0 || _id > nextCandidateId) revert InvalidCandidate();
-
-    Candidate memory c = candidates[_id];
-    return (c.candidateAddress, c.metadataCid, c.voteCount);
-}
+        Candidate memory c = candidates[_id];
+        return (c.candidateAddress, c.metadataCid, c.voteCount);
+    }
 
     // -------------------------------------------------
     // Voting Period
     // -------------------------------------------------
 
-    function setVotingPeriod(
-        uint _startOffset,
-        uint _duration
-    ) external onlyOwner {
-
+    function setVotingPeriod(uint256 _startOffset, uint256 _duration) external onlyOwner {
         if (nextCandidateId == 0) revert NoCandidates();
         if (startTime != 0) revert VotingAlreadyScheduled();
         require(_duration >= 1 hours, "Min 1 hour");
@@ -210,21 +178,14 @@ contract Vote is Ownable, Pausable, ReentrancyGuard {
         emit VotingPeriodSet(startTime, endTime);
     }
 
-    function getVotingStatus()
-        external
-        view
-        returns (VotingStatus)
-    {
+    function getVotingStatus() external view returns (VotingStatus) {
         if (startTime == 0) return VotingStatus.NotStarted;
         if (_isVotingActive()) return VotingStatus.InProgress;
         return VotingStatus.Ended;
     }
 
     function _isVotingActive() internal view returns (bool) {
-        return (
-            block.timestamp >= startTime &&
-            block.timestamp <= endTime
-        );
+        return (block.timestamp >= startTime && block.timestamp <= endTime);
     }
 
     // -------------------------------------------------
@@ -232,16 +193,15 @@ contract Vote is Ownable, Pausable, ReentrancyGuard {
     // -------------------------------------------------
 
     function announceWinner() external onlyOwner {
-
         if (winnerDeclared) revert WinnerAlreadyDeclared();
         if (block.timestamp <= endTime) revert VotingNotEnded();
 
-        uint maxVotes;
-        uint winnerId;
-        uint tieCount;
+        uint256 maxVotes;
+        uint256 winnerId;
+        uint256 tieCount;
 
-        for (uint i = 1; i <= nextCandidateId; i++) {
-            uint votes = candidates[i].voteCount;
+        for (uint256 i = 1; i <= nextCandidateId; i++) {
+            uint256 votes = candidates[i].voteCount;
 
             if (votes > maxVotes) {
                 maxVotes = votes;
