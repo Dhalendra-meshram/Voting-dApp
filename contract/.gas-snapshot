@@ -1,0 +1,5 @@
+VoteTest:testAnnounceWinner() (gas: 361254)
+VoteTest:testOwnerIsSetCorrectly() (gas: 10245)
+VoteTest:testRegisterCandidate() (gas: 114433)
+VoteTest:testRegisterVoter() (gas: 109217)
+VoteTest:testVotingFlow() (gas: 310079)
