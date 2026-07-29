@@ -42,7 +42,7 @@ export function useVoter() {
         address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
         functionName: "registerVoter",
-        args: [name, age, gender],
+        args: [name, BigInt(age), gender],
       })
 
       console.log("Registration TX:", hash)
