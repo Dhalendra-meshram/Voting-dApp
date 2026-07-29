@@ -8,7 +8,7 @@ export function useVote(candidateId?: number) {
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: "getVoteCount",
-    args: candidateId ? [candidateId] : undefined,
+    args: candidateId !== undefined ? [BigInt(candidateId)] : undefined,
   })
 
   function vote(id: number) {
@@ -16,7 +16,7 @@ export function useVote(candidateId?: number) {
       address: CONTRACT_ADDRESS,
       abi: CONTRACT_ABI,
       functionName: "castVote",
-      args: [id],
+      args: [BigInt(id)],
     })
   }
 
