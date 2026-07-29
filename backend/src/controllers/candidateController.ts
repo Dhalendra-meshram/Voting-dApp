@@ -7,7 +7,7 @@ export async function createCandidate(req: Request, res: Response) {
   try {
     const { candidateAddress, metadata } = req.body;
 
-    // 1️⃣ Basic validation
+    //  Basic validation
     if (!candidateAddress || !metadata) {
       return res.status(400).json({
         error: "candidateAddress and metadata are required"
@@ -26,7 +26,7 @@ export async function createCandidate(req: Request, res: Response) {
       });
     }
 
-    // 2️⃣ Upload to IPFS
+    //  Upload to IPFS
     const cid = await uploadToIPFS(metadata);
 
     if (!cid) {
@@ -35,10 +35,10 @@ export async function createCandidate(req: Request, res: Response) {
       });
     }
 
-    // 3️⃣ Simulate contract call (prevents gas waste)
+    //  Simulate contract call (prevents gas waste)
     await contract.registerCandidate.staticCall(candidateAddress, cid);
 
-    // 4️⃣ Send transaction
+    //  Send transaction
     const tx = await contract.registerCandidate(
       candidateAddress,
       cid

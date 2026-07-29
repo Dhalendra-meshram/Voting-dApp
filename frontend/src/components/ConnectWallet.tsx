@@ -34,7 +34,7 @@ export default function ConnectWallet() {
         statement: "Sign in to Voting DApp",
         uri: window.location.origin,
         version: "1",
-        chainId: 31337,
+        chainId: 11155111,
         nonce,
       })
 

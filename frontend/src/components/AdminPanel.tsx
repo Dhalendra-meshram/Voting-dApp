@@ -9,7 +9,7 @@ import { CONTRACT_ADDRESS, CONTRACT_ABI } from "@/lib/contract"
 export default function AdminPanel() {
   const { isOwner } = useVotingContract()
 
-  // ✅ IMPORTANT FIX
+  
   const { writeContractAsync } = useWriteContract()
 
   const [candidateAddress, setCandidateAddress] = useState("")
@@ -23,7 +23,7 @@ export default function AdminPanel() {
 
   if (!isOwner) return null
 
-  // 🔥 CREATE CANDIDATE
+  //  CREATE CANDIDATE
   async function createCandidate() {
     try {
       if (!candidateAddress || !name || !description || !imageCid) {
@@ -60,7 +60,7 @@ export default function AdminPanel() {
     }
   }
 
-  // 🔥 SET VOTING PERIOD
+  // SET VOTING PERIOD
   async function setVotingPeriod() {
     try {
       console.log("Setting voting period...")

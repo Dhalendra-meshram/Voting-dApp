@@ -18,7 +18,7 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
 
   const canVote = isRegistered && status === 1
 
-  // ✅ FIX image URL
+  // image URL
   let imageUrl = ""
 
   if (candidate.image?.startsWith("ipfs://")) {

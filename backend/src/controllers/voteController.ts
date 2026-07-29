@@ -27,7 +27,7 @@ export async function logVote(req: AuthRequest, res: Response) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    // 1️⃣ Fetch transaction receipt
+    // Fetch transaction receipt
     console.log("STEP 3: Fetching receipt...");
     const receipt = await provider.getTransactionReceipt(txHash);
     console.log("STEP 4: receipt =", receipt);
@@ -42,20 +42,20 @@ export async function logVote(req: AuthRequest, res: Response) {
       return res.status(400).json({ error: "Transaction failed" });
     }
 
-    // 2️⃣ Ensure transaction was sent to your contract
+    //  Ensure transaction was sent to your contract
     if (
       receipt.to?.toLowerCase() !== ENV.CONTRACT_ADDRESS.toLowerCase()
     ) {
       return res.status(400).json({ error: "Invalid contract transaction" });
     }
 
-    // 3️⃣ Prevent duplicate logging
+    //  Prevent duplicate logging
     const existing = await VoteLog.findOne({ txHash });
     if (existing) {
       return res.status(400).json({ error: "Vote already logged" });
     }
 
-    // 4️⃣ Decode VoteCast event
+    //  Decode VoteCast event
     let decodedCandidateId: number | null = null;
     console.log("Receipt logs:", receipt.logs);
 
@@ -86,7 +86,7 @@ export async function logVote(req: AuthRequest, res: Response) {
       return res.status(400).json({ error: "VoteCast event not found" });
     }
 
-    // 5️⃣ Save vote log
+    //  Save vote log
     await VoteLog.create({
       voter: req.user.address.toLowerCase(),
       candidateId: decodedCandidateId,

@@ -11,7 +11,9 @@ contract DeployVote is Script {
         console.log("Starting Vote Contract Deployment...");
         console.log("====================================");
 
-        vm.startBroadcast(); // uses --private-key automatically
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+
+        vm.startBroadcast(deployerPrivateKey);
 
         Vote vote = new Vote();
 
