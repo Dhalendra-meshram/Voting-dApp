@@ -66,11 +66,14 @@ export default function AdminPanel() {
       console.log("Setting voting period...")
 
       const hash = await writeContractAsync({
-        address: CONTRACT_ADDRESS,
-        abi: CONTRACT_ABI,
-        functionName: "setVotingPeriod",
-        args: [startOffset, duration],
-      })
+          address: CONTRACT_ADDRESS,
+          abi: CONTRACT_ABI,
+          functionName: "setVotingPeriod",
+          args: [
+              BigInt(startOffset),
+              BigInt(duration),
+      ],
+     })
 
       console.log("Transaction hash:", hash)
 
